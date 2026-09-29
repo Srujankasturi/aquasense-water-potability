@@ -14,6 +14,7 @@ safety verdict needs.
 | `theme.css` | CSS variables (light `:root`, dark `.dark`), atmosphere, typography rules, components, motion |
 | `tailwind-config.js` | Maps every Tailwind token name to `rgb(var(--c-…) / <alpha-value>)`, plus type scale, radii, spacing |
 | `assets/contours-orbit.svg` | Generated isobath artwork, used as a CSS **mask** so its colour follows the theme |
+| `contours.js` / `smooth-scroll.js` | Living contour map and eased wheel scrolling |
 | `app.js` | Shared logic. Emits markup with the token class names, so **token names must not change** |
 
 Change the look by editing **values** in `theme.css` (both blocks) and `tailwind-config.js`; never rename tokens.
@@ -49,9 +50,17 @@ Banned: Inter, Roboto, Arial, system fonts, Space Grotesk / Space Mono, Plus Jak
 
 ## Atmosphere
 
-Layered, never a flat page colour: (1) soft teal / ochre washes, (2) contour lines (`body::after` + `html::before`, masked
-`contours-orbit.svg`; the map **revolves slowly**: 900s clockwise, and a fainter copy 1500s counter-clockwise), (3) paper grain (`html::after`, multiply in light, screen in dark). Surfaces are hairline-bordered
+Layered, never a flat page colour: (1) soft teal / ochre washes, (2) contour lines: `frontend/contours.js` draws all 196 contours on a canvas and every line moves on its own, drifting along its own direction, swaying a few degrees and slowly breathing, while the whole map revolves (900 s) with a fainter copy the other way (1500 s). Capped at 30 fps, about 2 ms per frame, paused in hidden tabs, drawn once when reduced-motion is on. `body::after` (masked `contours-orbit.svg`) is only the static fallback. Tune `CFG` in `contours.js`; (3) paper grain (`html::after`, multiply in light, screen in dark). Surfaces are hairline-bordered
 "sheets" with a paper shadow, not glass: all `backdrop-blur` is disabled. Key panels use a **double rule** (`.plate`, `.sheet-double`).
+
+## Scrolling
+
+Smooth by construction. Each fixed background layer (washes, contour canvas, grain) is its own compositor layer (`will-change: transform`), so
+scrolling never repaints them; the grain has **no blend mode** (it forced a full-screen re-composite every frame). Measured in a
+software-rendered browser, these changes took scrolling from 19 to 39 fps (home) and 12 to 40 fps (analysis). The contour canvas
+draws at 20 fps, at most 1.25x pixel density, and pauses while the page is scrolling. `smooth-scroll.js` eases classic mouse-wheel
+steps (multiples of 120) into a glide; trackpads, touch, keyboard, scrollbar drags, anchors and reduced-motion users keep the browser's
+native behaviour. Anchor jumps land below the fixed header (`scroll-padding-top`). Tune `EASE` in `smooth-scroll.js`.
 
 ## Motion (CSS only)
 
