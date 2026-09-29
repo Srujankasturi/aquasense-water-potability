@@ -142,13 +142,24 @@ body::before {
     radial-gradient(900px 620px at 104% 10%, rgb(var(--c-secondary-container) / 0.42), transparent 64%),
     radial-gradient(1000px 720px at 72% 112%, rgb(var(--c-primary) / 0.10), transparent 62%);
 }
-body::after {
-  content: ""; position: fixed; inset: -3%; z-index: -1; pointer-events: none;
-  background-color: rgb(var(--contour-rgb) / var(--contour-alpha));
-  -webkit-mask: url("assets/contours.svg") center / cover no-repeat;
-          mask: url("assets/contours.svg") center / cover no-repeat;
-  animation: contour-in 1800ms var(--ease-out) both, contour-drift 60s ease-in-out infinite alternate;
+/* contour lines: a large square map that turns slowly (one revolution per 15 min) with a fainter second map
+   turning the other way (25 min). Square + oversized so the screen corners are never exposed while rotating. */
+body::after, html::before {
+  content: ""; position: fixed; z-index: -1; pointer-events: none;
+  top: 50%; left: 50%; width: max(2400px, 180vmax); height: max(2400px, 180vmax); translate: -50% -50%;
+  -webkit-mask: url("assets/contours-orbit.svg") center / 100% 100% no-repeat;
+          mask: url("assets/contours-orbit.svg") center / 100% 100% no-repeat;
 }
+body::after {
+  background-color: rgb(var(--contour-rgb) / var(--contour-alpha));
+  animation: contour-fade 2200ms var(--ease-out) both, contour-orbit 900s linear infinite;
+}
+html::before {
+  scale: 1.35;
+  background-color: rgb(var(--contour-rgb) / calc(var(--contour-alpha) * 0.55));
+  animation: contour-fade 3000ms var(--ease-out) both, contour-orbit-reverse 1500s linear infinite;
+}
+@media (max-width: 700px) { html::before { display: none; } }   /* one layer on phones: lighter on the GPU */
 html::after {
   content: ""; position: fixed; inset: 0; z-index: 90; pointer-events: none;
   opacity: var(--grain-opacity); mix-blend-mode: var(--grain-blend);
@@ -190,8 +201,9 @@ html ::-webkit-scrollbar-track { background: transparent; }
 /* ---------- motion: one orchestrated load, then quiet ---------- */
 @keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes contour-in { from { opacity: 0; transform: scale(1.04); } to { opacity: 1; transform: none; } }
-@keyframes contour-drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-1.2%, 0.8%, 0); } }
+@keyframes contour-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes contour-orbit { to { rotate: 360deg; } }
+@keyframes contour-orbit-reverse { from { rotate: 360deg; } to { rotate: 0deg; } }
 @keyframes stamp { 0% { opacity: 0; transform: scale(1.35) rotate(-3deg); } 60% { opacity: 1; transform: scale(0.97) rotate(0.5deg); } 100% { transform: none; } }
 
 header.fixed { animation: fade 500ms var(--ease-out) both; }

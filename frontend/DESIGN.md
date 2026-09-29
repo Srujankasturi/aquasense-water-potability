@@ -13,7 +13,7 @@ safety verdict needs.
 | :--- | :--- |
 | `theme.css` | CSS variables (light `:root`, dark `.dark`), atmosphere, typography rules, components, motion |
 | `tailwind-config.js` | Maps every Tailwind token name to `rgb(var(--c-…) / <alpha-value>)`, plus type scale, radii, spacing |
-| `assets/contours.svg` | Generated isobath artwork, used as a CSS **mask** so its colour follows the theme |
+| `assets/contours-orbit.svg` | Generated isobath artwork, used as a CSS **mask** so its colour follows the theme |
 | `app.js` | Shared logic. Emits markup with the token class names, so **token names must not change** |
 
 Change the look by editing **values** in `theme.css` (both blocks) and `tailwind-config.js`; never rename tokens.
@@ -49,8 +49,8 @@ Banned: Inter, Roboto, Arial, system fonts, Space Grotesk / Space Mono, Plus Jak
 
 ## Atmosphere
 
-Layered, never a flat page colour: (1) soft teal / ochre washes, (2) contour lines (`body::after`, masked
-`contours.svg`, drifting slowly), (3) paper grain (`html::after`, multiply in light, screen in dark). Surfaces are hairline-bordered
+Layered, never a flat page colour: (1) soft teal / ochre washes, (2) contour lines (`body::after` + `html::before`, masked
+`contours-orbit.svg`; the map **revolves slowly**: 900s clockwise, and a fainter copy 1500s counter-clockwise), (3) paper grain (`html::after`, multiply in light, screen in dark). Surfaces are hairline-bordered
 "sheets" with a paper shadow, not glass: all `backdrop-blur` is disabled. Key panels use a **double rule** (`.plate`, `.sheet-double`).
 
 ## Motion (CSS only)
