@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Young+Serif&amp;family=Familjen+Grotesk:wght@400;500;600;700&amp;family=Sometype+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script>
+<script src="tailwind-config.js"></script><link rel="stylesheet" href="theme.css" />
+</head><body class="bg-background font-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<header class="fixed top-0 w-full z-50">
+  <div class="h-20 max-w-7xl mx-auto px-margin flex items-center justify-between gap-gutter">
+    <a href="main.html" class="flex items-center gap-3 text-primary hover:opacity-90 transition-opacity" aria-label="AquaSense home">
+      <svg class="brand-mark" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+        <path d="M20 3C20 3 7 18 7 25.5a13 13 0 0 0 26 0C33 18 20 3 20 3Z"/>
+        <path d="M20 11.5C20 11.5 13 20 13 25.5a7 7 0 0 0 14 0C27 20 20 11.5 20 11.5Z" opacity=".65"/>
+        <path d="M20 19.5c0 0-3.4 4-3.4 6.2a3.4 3.4 0 0 0 6.8 0c0-2.2-3.4-6.2-3.4-6.2Z" fill="currentColor" stroke="none"/>
+      </svg>
+      <span class="font-headline-sm text-headline-sm text-on-surface">AquaSense</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-1" aria-label="Primary">
+      <a class="nav-link" href="main.html">Home</a>
+      <a class="nav-link" href="predict.html" aria-current="page">Predict</a>
+      <a class="nav-link" href="result.html">Result</a>
+      <a class="nav-link" href="analysis.html">Analysis</a>
+    </nav>
+    <div class="flex items-center gap-space-sm">
+      <button aria-label="Toggle light mode" id="theme-toggle-btn" class="icon-btn" type="button"><span class="material-symbols-outlined text-[22px]">light_mode</span></button>
+      <a href="result.html" class="btn btn-primary btn-sm hidden sm:inline-flex"><span class="material-symbols-outlined text-[20px]">assessment</span><span>Last result</span></a>
+      <button class="icon-btn md:hidden" id="mobile-menu-btn" type="button" aria-label="Open menu" aria-controls="mobile-menu"><span class="material-symbols-outlined text-[24px]">menu</span></button>
+    </div>
+  </div>
+  <div class="md:hidden hidden mobile-sheet" id="mobile-menu">
+    <a href="main.html" class="m-link">Home</a>
+    <a href="predict.html" class="m-link" aria-current="page">Predict</a>
+    <a href="result.html" class="m-link">Result</a>
+    <a href="analysis.html" class="m-link">Analysis</a>
+  </div>
+</header>
+<main class="w-full pt-20 bg-background min-h-screen"><div class="flex flex-col w-full">
+<div class="w-full relative overflow-hidden px-margin-mobile md:px-margin py-space-lg lg:py-space-xl max-w-7xl mx-auto">
+<!-- Header -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md mb-space-lg">
+        <div>
+          
+          <h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Predict water quality</h1>
+          <p class="font-body-md text-body-md text-on-surface-variant mt-2 max-w-xl">Enter the nine measurements for your sample and pick a model.</p>
+        </div>
+        <div class="flex items-center gap-space-xs">
+          <span class="eyebrow text-on-surface-variant">Input check</span>
+          <span class="flex items-center gap-1 px-space-sm py-1 rounded-full bg-tertiary-container/10 text-tertiary font-label-sm text-label-sm font-semibold" id="validation-pill">
+            <span class="material-symbols-outlined text-[15px]">check_circle</span> All Parameters Ready
+          </span>
+        </div>
+      </div>
+      <!-- Screening notice -->
+      <div class="mb-space-md p-space-sm px-space-md rounded-2xl bg-surface-container-high/60 flex items-center gap-space-xs text-body-sm text-on-surface-variant">
+        <span class="material-symbols-outlined text-[18px] text-primary flex-shrink-0">info</span>
+        <span><strong>Screening aid.</strong> Not a substitute for laboratory testing.</span>
+      </div>
+      <!-- Model switcher -->
+      <div class="model-switch mb-space-lg" role="radiogroup" aria-label="Prediction model">
+        <span class="eyebrow text-on-surface-variant mr-1">Model</span>
+        <button type="button" id="btn-model-xgb" class="model-btn" role="radio" aria-checked="false" onclick="selectModel('xgboost')">XGBoost</button>
+        <button type="button" id="btn-model-rf" class="model-btn is-active" role="radio" aria-checked="true" onclick="selectModel('random_forest')">Random Forest</button>
+        <button type="button" id="btn-model-dt" class="model-btn" role="radio" aria-checked="false" onclick="selectModel('decision_tree')">Decision Tree</button>
+        <button type="button" id="btn-model-lr" class="model-btn" role="radio" aria-checked="false" onclick="selectModel('logistic_regression')">Logistic Regression</button>
+      </div>
+      <!-- 2-Column Main Workspace Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-stretch">
+<!-- LEFT COLUMN: sample plate + presets -->
+      <div class="lg:col-span-4 flex flex-col gap-space-md">
+        
+        <section class="preset-card" aria-labelledby="preset-title">
+          <div class="flex items-center justify-between mb-space-sm">
+            <h2 id="preset-title" class="eyebrow text-secondary">Quick sample presets</h2>
+            <span class="eyebrow text-on-surface-variant">Click to load</span>
+          </div>
+          <div class="flex flex-col gap-space-xs">
+            <button class="preset-btn" onclick="loadPreset('clean')" type="button">
+              <span class="preset-name">Clean River Reserve</span>
+              <span class="preset-desc">Real dataset row, labelled potable</span>
+              <span class="preset-tag tag-good">All limits met</span>
+            </button>
+            <button class="preset-btn" onclick="loadPreset('tap')" type="button">
+              <span class="preset-name">Treated Municipal Tap</span>
+              <span class="preset-desc">Real dataset row, labelled potable</span>
+              <span class="preset-tag tag-warn">Near limits</span>
+            </button>
+            <button class="preset-btn" onclick="loadPreset('industrial')" type="button">
+              <span class="preset-name">Industrial Runoff Stream</span>
+              <span class="preset-desc">Synthetic worst case</span>
+              <span class="preset-tag tag-bad">Exceeds limits</span>
+            </button>
+          </div>
+        </section>
+      </div>
+      <!-- RIGHT COLUMN: 9-Parameter Input Glass Card -->
+<div class="lg:col-span-8 bg-surface-container-lowest/85 backdrop-blur-xl rounded-3xl p-space-lg lg:p-space-xl shadow-xl shadow-primary/5 flex flex-col justify-between relative overflow-hidden">
+<!-- Subtle Caustic Fluid Accent in Corner -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-secondary-container/15 via-transparent to-transparent pointer-events-none"></div>
+<div>
+<div class="pb-space-sm"><h2 class="font-headline-sm text-headline-sm text-on-surface">Water sample</h2></div>
+
+
+
+<!-- 3-Column Parameter Grid -->
+<form class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-gutter pt-space-xs" id="prediction-form" onsubmit="event.preventDefault(); runPrediction();">
+<!-- 1. pH -->
+<div class="flex flex-col gap-1.5 p-space-sm rounded-2xl bg-surface-container-low/50 hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center justify-between">
+<label class="font-title-md text-body-md font-semibold text-on-surface flex items-center gap-space-xs" for="param-ph">
+<span class="w-8 h-8 rounded-xl bg-surface-container-high text-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[18px]">science</span>
+</span>
+                  pH Level
+                </label>
+<span class="font-label-sm text-label-sm text-secondary font-medium">0 - 14</span>
+</div>
+<div class="relative mt-1">
+<input class="w-full bg-surface-container-lowest text-on-surface font-title-md text-title-md font-bold px-3.5 py-2.5 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-container transition-all" id="param-ph" max="14" min="0" placeholder="7.2" required="" step="0.01" type="number" value="7.20"/>
+<span class="absolute right-3.5 top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-on-surface-variant font-medium">pH</span>
+</div>
+<div class="flex items-center justify-between px-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Limit 6.5 – 8.5</span>
+</div>
+</div>
+<!-- 2. Hardness -->
+<div class="flex flex-col gap-1.5 p-space-sm rounded-2xl bg-surface-container-low/50 hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center justify-between">
+<label class="font-title-md text-body-md font-semibold text-on-surface flex items-center gap-space-xs" for="param-hardness">
+<span class="w-8 h-8 rounded-xl bg-surface-container-high text-secondary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[18px]">grain</span>
+</span>
+                  Hardness
+                </label>
+<span class="font-label-sm text-label-sm text-secondary font-medium">mg/L</span>
+</div>
+<div class="relative mt-1">
+<input class="w-full bg-surface-container-lowest text-on-surface font-title-md text-title-md font-bold px-3.5 py-2.5 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-container transition-all" id="param-hardness" max="600" min="0" placeholder="180" required="" step="0.1" type="number" value="180"/>
+<span class="absolute right-3.5 top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-on-surface-variant font-medium">mg/L</span>
+</div>
+<div class="flex items-center justify-between px-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Limit &lt; 330</span>
+</div>
+</div>
+<!-- 3. Solids (TDS) -->
+<div class="flex flex-col gap-1.5 p-space-sm rounded-2xl bg-surface-container-low/50 hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center justify-between">
+<label class="font-title-md text-body-md font-semibold text-on-surface flex items-center gap-space-xs" for="param-solids">
+<span class="w-8 h-8 rounded-xl bg-surface-container-high text-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[18px]">filter_vintage</span>
+</span>
+                  Solids (TDS)
+                </label>
+<span class="font-label-sm text-label-sm text-secondary font-medium">ppm</span>
+</div>
+<div class="relative mt-1">
+<input class="w-full bg-surface-container-lowest text-on-surface font-title-md text-title-md font-bold px-3.5 py-2.5 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-container transition-all" id="param-solids" max="60000" min="0" placeholder="15000" required="" step="1" type="number" value="15000"/>
+<span class="absolute right-3.5 top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-on-surface-variant font-medium">ppm</span>
+</div>
+<div class="flex items-center justify-between px-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Limit &lt; 26,000</span>
+</div>
+</div>
+<!-- 4. Chloramines -->
+<div class="flex flex-col gap-1.5 p-space-sm rounded-2xl bg-surface-container-low/50 hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center justify-between">
+<label class="font-title-md text-body-md font-semibold text-on-surface flex items-center gap-space-xs" for="param-chloramines">
+<span class="w-8 h-8 rounded-xl bg-surface-container-high text-primary-container flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[18px]">water_drop</span>
+</span>
+                  Chloramines
+                </label>
+<span class="font-label-sm text-label-sm text-secondary font-medium">ppm</span>
+</div>
+<div class="relative mt-1">
+<input class="w-full bg-surface-container-lowest text-on-surface font-title-md text-title-md font-bold px-3.5 py-2.5 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-container transition-all" id="param-chloramines" max="15" min="0" placeholder="7.0" required="" step="0.01" type="number" value="7.00"/>
+<span class="absolute right-3.5 top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-on-surface-variant font-medium">ppm</span>
+</div>
+<div class="flex items-center justify-between px-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Limit &lt; 8.5</span>
+</div>
+</div>
+<!-- 5. Sulfate -->
+<div class="flex flex-col gap-1.5 p-space-sm rounded-2xl bg-surface-container-low/50 hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center justify-between">
+<label class="font-title-md text-body-md font-semibold text-on-surface flex items-center gap-space-xs" for="param-sulfate">
+<span class="w-8 h-8 rounded-xl bg-surface-container-high text-secondary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[18px]">blur_on</span>
+</span>
+                  Sulfate
+                </label>
+<span class="font-label-sm text-label-sm text-secondary font-medium">mg/L</span>
+</div>
+<div class="relative mt-1">
+<input class="w-full bg-surface-container-lowest text-on-surface font-title-md text-title-md font-bold px-3.5 py-2.5 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-container transition-all" id="param-sulfate" max="600" min="0" placeholder="300" required="" step="0.1" type="number" value="300"/>
+<span class="absolute right-3.5 top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-on-surface-variant font-medium">mg/L</span>
+</div>
+<div class="flex items-center justify-between px-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Limit &lt; 450</span>
+</div>
+</div>
+<!-- 6. Conductivity -->
+<div class="flex flex-col gap-1.5 p-space-sm rounded-2xl bg-surface-container-low/50 hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center justify-between">
+<label class="font-title-md text-body-md font-semibold text-on-surface flex items-center gap-space-xs" for="param-conductivity">
+<span class="w-8 h-8 rounded-xl bg-surface-container-high text-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+</span>
+                  Conductivity
+                </label>
+<span class="font-label-sm text-label-sm text-secondary font-medium">μS/cm</span>
+</div>
+<div class="relative mt-1">
+<input class="w-full bg-surface-container-lowest text-on-surface font-title-md text-title-md font-bold px-3.5 py-2.5 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-container transition-all" id="param-conductivity" max="1000" min="0" placeholder="400" required="" step="1" type="number" value="400"/>
+<span class="absolute right-3.5 top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-on-surface-variant font-medium">μS/cm</span>
+</div>
+<div class="flex items-center justify-between px-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Limit &lt; 650</span>
+</div>
+</div>
+<!-- 7. Organic Carbon -->
+<div class="flex flex-col gap-1.5 p-space-sm rounded-2xl bg-surface-container-low/50 hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center justify-between">
+<label class="font-title-md text-body-md font-semibold text-on-surface flex items-center gap-space-xs" for="param-organic">
+<span class="w-8 h-8 rounded-xl bg-surface-container-high text-tertiary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[18px]">co2</span>
+</span>
+                  Organic Carbon
+                </label>
+<span class="font-label-sm text-label-sm text-secondary font-medium">ppm</span>
+</div>
+<div class="relative mt-1">
+<input class="w-full bg-surface-container-lowest text-on-surface font-title-md text-title-md font-bold px-3.5 py-2.5 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-container transition-all" id="param-organic" max="40" min="0" placeholder="10.0" required="" step="0.01" type="number" value="10.00"/>
+<span class="absolute right-3.5 top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-on-surface-variant font-medium">ppm</span>
+</div>
+<div class="flex items-center justify-between px-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Limit &lt; 20</span>
+</div>
+</div>
+<!-- 8. Trihalomethanes -->
+<div class="flex flex-col gap-1.5 p-space-sm rounded-2xl bg-surface-container-low/50 hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center justify-between">
+<label class="font-title-md text-body-md font-semibold text-on-surface flex items-center gap-space-xs" for="param-thm">
+<span class="w-8 h-8 rounded-xl bg-surface-container-high text-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[18px]">bubble_chart</span>
+</span>
+                  Trihalomethanes
+                </label>
+<span class="font-label-sm text-label-sm text-secondary font-medium">μg/L</span>
+</div>
+<div class="relative mt-1">
+<input class="w-full bg-surface-container-lowest text-on-surface font-title-md text-title-md font-bold px-3.5 py-2.5 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-container transition-all" id="param-thm" max="150" min="0" placeholder="60.0" required="" step="0.1" type="number" value="60.0"/>
+<span class="absolute right-3.5 top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-on-surface-variant font-medium">μg/L</span>
+</div>
+<div class="flex items-center justify-between px-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Limit &lt; 80</span>
+</div>
+</div>
+<!-- 9. Turbidity -->
+<div class="flex flex-col gap-1.5 p-space-sm rounded-2xl bg-surface-container-low/50 hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center justify-between">
+<label class="font-title-md text-body-md font-semibold text-on-surface flex items-center gap-space-xs" for="param-turbidity">
+<span class="w-8 h-8 rounded-xl bg-surface-container-high text-secondary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[18px]">opacity</span>
+</span>
+                  Turbidity
+                </label>
+<span class="font-label-sm text-label-sm text-secondary font-medium">NTU</span>
+</div>
+<div class="relative mt-1">
+<input class="w-full bg-surface-container-lowest text-on-surface font-title-md text-title-md font-bold px-3.5 py-2.5 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary-container transition-all" id="param-turbidity" max="10" min="0" placeholder="3.0" required="" step="0.01" type="number" value="3.00"/>
+<span class="absolute right-3.5 top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-on-surface-variant font-medium">NTU</span>
+</div>
+<div class="flex items-center justify-between px-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Limit &lt; 5</span>
+</div>
+</div>
+</form>
+</div>
+<!-- Bottom Action Bar & Prediction Trigger -->
+<div class="mt-space-lg pt-space-md flex flex-col sm:flex-row items-center justify-between gap-space-md">
+
+<div class="flex items-center gap-space-sm w-full sm:w-auto order-1 sm:order-2">
+<!-- Reset Button -->
+<button class="btn btn-ghost w-1/3 sm:w-auto" onclick="loadDefaultValues()" type="button">
+              Reset
+            </button>
+<!-- Predict Primary Pill Button -->
+<button class="btn btn-primary w-2/3 sm:w-auto" id="predict-button" onclick="runPrediction()" type="button">
+<span id="button-label">Predict Water Quality</span>
+<span class="material-symbols-outlined text-[20px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Live Prediction Inference Modal Result Overlay -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-space-md bg-on-surface/40 backdrop-blur-md hidden opacity-0 transition-opacity duration-300" id="result-modal">
+<div class="relative w-full max-w-2xl rounded-3xl bg-surface-container-lowest/95 backdrop-blur-2xl p-space-lg lg:p-space-xl shadow-2xl shadow-primary/20 transform scale-95 transition-transform duration-300 overflow-hidden">
+<!-- Close Button -->
+<button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-on-surface transition-colors" onclick="closeModal()" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+<div class="flex items-center gap-space-xs text-primary font-label-sm text-label-sm uppercase tracking-wider font-semibold mb-1">
+<span class="material-symbols-outlined text-[16px]">neurology</span>
+          Inference Result Completed
+        </div>
+<h3 class="font-headline-lg text-headline-sm md:text-headline-lg font-bold text-on-surface">Potability Assessment</h3>
+<p class="font-body-sm text-body-sm text-secondary mb-space-md">Based on the 9 measurements you entered, the model returned:</p>
+<!-- Big Diagnostic Card -->
+<div class="rounded-2xl p-space-md mb-space-md flex flex-col sm:flex-row items-center justify-between gap-space-md bg-tertiary-container/10" id="modal-status-card">
+<div class="flex items-center gap-space-md">
+<div class="w-14 h-14 rounded-2xl bg-tertiary text-on-tertiary flex items-center justify-center shadow-md" id="modal-status-icon">
+<span class="material-symbols-outlined text-[32px]">check_circle</span>
+</div>
+<div>
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-md text-headline-md font-bold text-tertiary" id="modal-status-title">POTABLE</span>
+<span class="px-space-xs py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold" id="modal-status-badge">Safe for Drinking</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5" id="modal-status-desc">Physical chemical matrix conforms with WHO Class 1 drinking water thresholds.</p>
+</div>
+</div>
+<div class="flex flex-col items-center justify-center bg-surface-container-lowest/80 px-space-md py-space-sm rounded-xl">
+<span class="font-label-sm text-label-sm text-secondary uppercase font-semibold">Confidence</span>
+<span class="font-display-lg text-headline-lg font-extrabold text-primary" id="modal-probability">84%</span>
+</div>
+</div>
+
+<!-- Modal Actions -->
+<div class="mt-space-lg flex items-center justify-end gap-space-sm">
+<button class="px-space-md py-2.5 rounded-full bg-surface-container-high hover:bg-surface-variant text-on-surface font-title-md text-body-md font-semibold transition-colors" onclick="closeModal()" type="button">
+            Adjust Parameters
+          </button>
+<a id="modal-report-link" class="btn btn-primary" href="result.html">
+<span>View Full Diagnostic Report</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+
+</div>
+<script src="app.js"></script>
+<script>
+    // Model names/notes are static labels; the champion and every metric come from /api/metadata
+    const MODEL_NAMES = {
+      xgboost: 'XGBoost', random_forest: 'Random Forest',
+      decision_tree: 'Decision Tree', logistic_regression: 'Logistic Regression'
+    };
+    const MODEL_NOTES = {
+      xgboost: 'Gradient Boosting', random_forest: 'Ensemble Bagging',
+      decision_tree: 'Rule-Based', logistic_regression: 'Linear Baseline'
+    };
+    const MODEL_BUTTON_IDS = {
+      xgboost: 'btn-model-xgb', random_forest: 'btn-model-rf',
+      decision_tree: 'btn-model-dt', logistic_regression: 'btn-model-lr'
+    };
+    const MODEL_BUTTON_LABELS = {
+      xgboost: 'XGBoost', random_forest: 'Random Forest',
+      decision_tree: 'Decision Tree', logistic_regression: 'Logistic Regression'
+    };
+
+    let championKey = null;   // set from the backend on load
+    let benchmarks = {};      // candidate_models from /api/metadata, keyed by display name
+
+    function badgeName(key) {
+      return championKey === key
+        ? `${MODEL_NAMES[key]} (Champion · Best CV F1)`
+        : `${MODEL_NAMES[key]} (${MODEL_NOTES[key]})`;
+    }
+
+    function describeModel(key) {
+      const m = benchmarks[MODEL_NAMES[key]];
+      if (!m) return `${MODEL_NAMES[key]} · ${MODEL_NOTES[key]}`;
+      const cv = typeof m.cv_f1_mean === 'number' ? ` · CV F1 ${m.cv_f1_mean.toFixed(3)}` : '';
+      return `${MODEL_NAMES[key]} · ${(m.accuracy * 100).toFixed(2)}% Accuracy · ${(m.recall * 100).toFixed(2)}% Recall${cv}`;
+    }
+
+    // Live Parameter Validation Helper
+    function updateLiveValidation() {
+      const inputs = {
+        ph: document.getElementById('param-ph')?.value,
+        hardness: document.getElementById('param-hardness')?.value,
+        solids: document.getElementById('param-solids')?.value,
+        chloramines: document.getElementById('param-chloramines')?.value,
+        sulfate: document.getElementById('param-sulfate')?.value,
+        conductivity: document.getElementById('param-conductivity')?.value,
+        organic: document.getElementById('param-organic')?.value,
+        trihalo: document.getElementById('param-thm')?.value,
+        turbidity: document.getElementById('param-turbidity')?.value
+      };
+
+      let violations = 0;
+      for (const [key, val] of Object.entries(inputs)) {
+        const res = getParameterStatus(key, val);
+        if (res.status === 'critical') violations++;
+      }
+
+      const pill = document.getElementById('validation-pill');
+      if (pill) {
+        if (violations === 0) {
+          pill.className = "flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-tertiary-container/10 text-tertiary font-label-sm text-label-sm font-semibold";
+          pill.innerHTML = `<span class="material-symbols-outlined text-[15px]">check_circle</span> All Parameters Safe`;
+        } else {
+          pill.className = "flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-error-container/20 text-error font-label-sm text-label-sm font-semibold";
+          pill.innerHTML = `<span class="material-symbols-outlined text-[15px]">warning</span> ${violations} Limit Breached`;
+        }
+      }
+    }
+
+    // Listen to live input changes across all parameters
+    const paramForm = document.getElementById('prediction-form');
+    if (paramForm) {
+      paramForm.addEventListener('input', updateLiveValidation);
+    }
+
+    // Mobile navigation toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenuBtn && mobileMenu) {
+      mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+
+    // Form field id for each API parameter key (used to highlight server-side validation errors)
+    const PARAM_INPUT_IDS = {
+      ph: 'param-ph', hardness: 'param-hardness', solids: 'param-solids', chloramines: 'param-chloramines',
+      sulfate: 'param-sulfate', conductivity: 'param-conductivity', organic: 'param-organic',
+      trihalo: 'param-thm', turbidity: 'param-turbidity'
+    };
+
+    let selectedModelKey = 'random_forest';  // replaced by the backend's champion on load
+
+    function selectModel(key, silent = false) {
+      selectedModelKey = key;
+
+      Object.keys(MODEL_BUTTON_IDS).forEach(mKey => {
+        const btn = document.getElementById(MODEL_BUTTON_IDS[mKey]);
+        if (!btn) return;
+        btn.textContent = MODEL_BUTTON_LABELS[mKey] + (mKey === championKey ? ' ★' : '');
+        btn.className = 'model-btn' + (mKey === key ? ' is-active' : '');
+        btn.setAttribute('aria-checked', String(mKey === key));
+      });
+
+      // Update the active classifier badge in the card header
+      const descEl = document.getElementById('active-model-desc');
+      const badgeEl = document.getElementById('active-model-badge');
+      if (descEl) descEl.textContent = describeModel(key);
+      if (badgeEl) badgeEl.textContent = badgeName(key);
+
+      if (!silent) {
+        showToast(`${MODEL_NAMES[key]} selected` + (key === championKey ? ' — champion (highest cross-validated F1)' : ` — ${MODEL_NOTES[key].toLowerCase()}`), 'info');
+      }
+    }
+
+    // On load: adopt the backend's champion model and its real benchmark numbers
+    (async () => {
+      let meta = await loadLiveMetadata();
+      if (!meta) {
+        try { meta = JSON.parse(localStorage.getItem('aquasense_metadata')); } catch (e) { /* none cached */ }
+      }
+      championKey = (meta && meta.model_key) || FALLBACK_CHAMPION_KEY;
+      benchmarks = (meta && meta.candidate_models) || {};
+      selectModel(championKey, true);
+    })();
+
+    function loadPreset(key) {
+      const data = SAMPLE_PRESETS[key];
+      if (!data) return;
+      document.getElementById('param-ph').value = data.ph;
+      document.getElementById('param-hardness').value = data.hardness;
+      document.getElementById('param-solids').value = data.solids;
+      document.getElementById('param-chloramines').value = data.chloramines;
+      document.getElementById('param-sulfate').value = data.sulfate;
+      document.getElementById('param-conductivity').value = data.conductivity;
+      document.getElementById('param-organic').value = data.organic;
+      document.getElementById('param-thm').value = data.trihalo;
+      document.getElementById('param-turbidity').value = data.turbidity;
+      updateLiveValidation();
+      showToast(`Loaded ${data.name} preset`, 'success');
+    }
+
+    function loadDefaultValues() {
+      loadPreset('clean');
+    }
+
+    async function runPrediction() {
+      const btn = document.getElementById('predict-button');
+      const label = document.getElementById('button-label');
+      
+      // Temporary loading indicator
+      label.textContent = "Calculating Model Inference...";
+      btn.classList.add('opacity-80', 'pointer-events-none');
+
+      const inputs = {
+        ph: document.getElementById('param-ph').value,
+        hardness: document.getElementById('param-hardness').value,
+        solids: document.getElementById('param-solids').value,
+        chloramines: document.getElementById('param-chloramines').value,
+        sulfate: document.getElementById('param-sulfate').value,
+        conductivity: document.getElementById('param-conductivity').value,
+        organic: document.getElementById('param-organic').value,
+        trihalo: document.getElementById('param-thm').value,
+        turbidity: document.getElementById('param-turbidity').value
+      };
+
+      // Query Flask Backend with selected model (offline estimate only if the backend is unreachable)
+      const evalResult = await predictWaterQualityLive(inputs, selectedModelKey);
+
+      btn.classList.remove('opacity-80', 'pointer-events-none');
+      label.textContent = "Predict Water Quality";
+
+      // Clear previous field errors, then show any returned by the server (HTTP 400)
+      Object.values(PARAM_INPUT_IDS).forEach(id => document.getElementById(id)?.classList.remove('ring-2', 'ring-error'));
+      if (evalResult.error) {
+        const fieldErrors = evalResult.fieldErrors || {};
+        const msgs = Object.entries(fieldErrors).map(([k, m]) => `${k}: ${m}`);
+        Object.keys(fieldErrors).forEach(k => document.getElementById(PARAM_INPUT_IDS[k])?.classList.add('ring-2', 'ring-error'));
+        showToast(msgs.length ? `Please fix: ${msgs.slice(0, 3).join(' · ')}${msgs.length > 3 ? ' …' : ''}` : evalResult.message, 'error');
+        return;
+      }
+      const isOffline = evalResult.isOffline === true;
+
+      
+      const modalCard = document.getElementById('modal-status-card');
+      const modalIcon = document.getElementById('modal-status-icon');
+      const modalTitle = document.getElementById('modal-status-title');
+      const modalBadge = document.getElementById('modal-status-badge');
+      const modalDesc = document.getElementById('modal-status-desc');
+      const modalProb = document.getElementById('modal-probability');
+      const modalProbLabel = modalProb ? modalProb.previousElementSibling : null;
+
+      if (evalResult.isPotable) {
+        modalCard.className = "rounded-2xl p-space-md mb-space-md flex flex-col sm:flex-row items-center justify-between gap-space-md bg-tertiary-container/10 border border-tertiary/20";
+        modalIcon.className = "w-14 h-14 rounded-2xl bg-tertiary text-on-tertiary flex items-center justify-center shadow-md";
+        modalIcon.innerHTML = `<span class="material-symbols-outlined text-[32px]">check_circle</span>`;
+        modalTitle.className = "font-headline-md text-headline-md font-bold text-tertiary";
+        modalTitle.textContent = "POTABLE";
+        modalBadge.className = "px-space-xs py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold";
+        const potableWarnings = evalResult.violations || evalResult.flags || [];
+        modalBadge.textContent = isOffline
+          ? "Offline estimate – not ML"
+          : (potableWarnings.length ? "Model: Potable · Guideline Warnings" : "Meets Screening Criteria");
+        modalDesc.textContent = potableWarnings.length
+          ? "The model predicts potable, but these guideline thresholds are exceeded: " + potableWarnings.join(", ") + ". Confirm with laboratory testing."
+          : (isOffline
+              ? "All parameters conform to WHO & EPA reference thresholds (rules-only estimate; the backend is unreachable)."
+              : "The model classifies this sample as potable and all parameters conform to WHO & EPA reference thresholds. (Screening aid only; certified laboratory testing recommended).");
+        if (modalProbLabel) modalProbLabel.textContent = isOffline ? "Guideline Compliance Score" : "Model Potable Probability";
+        modalProb.textContent = evalResult.potablePct + "%";
+        modalProb.className = "font-display-lg text-headline-lg font-extrabold text-tertiary";
+      } else {
+        modalCard.className = "rounded-2xl p-space-md mb-space-md flex flex-col sm:flex-row items-center justify-between gap-space-md bg-error-container/20 border border-error/20";
+        modalIcon.className = "w-14 h-14 rounded-2xl bg-error text-on-error flex items-center justify-center shadow-md";
+        modalIcon.innerHTML = `<span class="material-symbols-outlined text-[32px]">warning</span>`;
+        modalTitle.className = "font-headline-md text-headline-md font-bold text-error";
+        modalTitle.textContent = "NON-POTABLE";
+        modalBadge.className = "px-space-xs py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold";
+        modalBadge.textContent = isOffline ? "Offline estimate – not ML" : "Screening Alert: Treatment Recommended";
+        const flagsList = evalResult.violations || evalResult.flags || [];
+        modalDesc.textContent = flagsList.length > 0
+          ? "Unsafe thresholds detected: " + flagsList.join(", ")
+          : "The model classifies this sample as not potable, although no single guideline threshold is exceeded. Laboratory testing recommended.";
+        if (modalProbLabel) modalProbLabel.textContent = isOffline ? "Guideline Risk" : "Model Non-Potable Probability";
+        modalProb.textContent = evalResult.riskPct + "%";
+        modalProb.className = "font-display-lg text-headline-lg font-extrabold text-error";
+      }
+
+      // Sync modal view report link with exact query parameters
+      const modalReportLink = document.getElementById('modal-report-link');
+      if (modalReportLink) {
+        modalReportLink.href = `result.html?ph=${encodeURIComponent(inputs.ph)}&hardness=${encodeURIComponent(inputs.hardness)}&solids=${encodeURIComponent(inputs.solids)}&chloramines=${encodeURIComponent(inputs.chloramines)}&sulfate=${encodeURIComponent(inputs.sulfate)}&conductivity=${encodeURIComponent(inputs.conductivity)}&organic=${encodeURIComponent(inputs.organic)}&trihalo=${encodeURIComponent(inputs.trihalo)}&turbidity=${encodeURIComponent(inputs.turbidity)}&model=${encodeURIComponent(selectedModelKey)}`;
+      }
+
+      openModal();
+    }
+
+    function openModal() {
+      const modal = document.getElementById('result-modal');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        modal.querySelector('div').classList.remove('scale-95');
+      }, 10);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('result-modal');
+      modal.classList.add('opacity-0');
+      modal.querySelector('div').classList.add('scale-95');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 300);
+    }
+
+    // Run initial validation pass
+    document.addEventListener('DOMContentLoaded', updateLiveValidation);
+  </script>
+</div></main><footer class="site-footer mt-space-xl">
+  <div class="max-w-7xl mx-auto px-margin py-space-lg flex flex-col sm:flex-row items-center justify-between gap-space-sm">
+    <span class="font-body-md text-body-md text-on-surface-variant">AquaSense · a screening aid, not a laboratory test.</span>
+    <span class="eyebrow text-on-surface-variant">Limits: WHO / EPA-based</span>
+  </div>
+</footer></body></html>

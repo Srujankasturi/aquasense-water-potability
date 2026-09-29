@@ -1,0 +1,136 @@
+{
+    "total_samples": 3276,
+    "total_features": 9,
+    "features": [
+        "ph",
+        "Hardness",
+        "Solids",
+        "Chloramines",
+        "Sulfate",
+        "Conductivity",
+        "Organic_carbon",
+        "Trihalomethanes",
+        "Turbidity"
+    ],
+    "missing_values": {
+        "ph": 491,
+        "Hardness": 0,
+        "Solids": 0,
+        "Chloramines": 0,
+        "Sulfate": 781,
+        "Conductivity": 0,
+        "Organic_carbon": 0,
+        "Trihalomethanes": 162,
+        "Turbidity": 0
+    },
+    "missing_percentages": {
+        "ph": 14.99,
+        "Hardness": 0.0,
+        "Solids": 0.0,
+        "Chloramines": 0.0,
+        "Sulfate": 23.84,
+        "Conductivity": 0.0,
+        "Organic_carbon": 0.0,
+        "Trihalomethanes": 4.95,
+        "Turbidity": 0.0
+    },
+    "total_missing_cells": 1434,
+    "potable_samples": 1278,
+    "not_potable_samples": 1998,
+    "potable_percentage": 39.01,
+    "not_potable_percentage": 60.99,
+    "feature_statistics": {
+        "ph": {
+            "mean": 7.08,
+            "std": 1.59,
+            "median": 7.04,
+            "min": 0.0,
+            "max": 14.0,
+            "q25": 6.09,
+            "q75": 8.06,
+            "skew": 0.03
+        },
+        "Hardness": {
+            "mean": 196.37,
+            "std": 32.88,
+            "median": 196.97,
+            "min": 47.43,
+            "max": 323.12,
+            "q25": 176.85,
+            "q75": 216.67,
+            "skew": -0.04
+        },
+        "Solids": {
+            "mean": 22014.09,
+            "std": 8768.57,
+            "median": 20927.83,
+            "min": 320.94,
+            "max": 61227.2,
+            "q25": 15666.69,
+            "q75": 27332.76,
+            "skew": 0.62
+        },
+        "Chloramines": {
+            "mean": 7.12,
+            "std": 1.58,
+            "median": 7.13,
+            "min": 0.35,
+            "max": 13.13,
+            "q25": 6.13,
+            "q75": 8.11,
+            "skew": -0.01
+        },
+        "Sulfate": {
+            "mean": 333.78,
+            "std": 41.42,
+            "median": 333.07,
+            "min": 129.0,
+            "max": 481.03,
+            "q25": 307.7,
+            "q75": 359.95,
+            "skew": -0.04
+        },
+        "Conductivity": {
+            "mean": 426.21,
+            "std": 80.82,
+            "median": 421.88,
+            "min": 181.48,
+            "max": 753.34,
+            "q25": 365.73,
+            "q75": 481.79,
+            "skew": 0.26
+        },
+        "Organic_carbon": {
+            "mean": 14.28,
+            "std": 3.31,
+            "median": 14.22,
+            "min": 2.2,
+            "max": 28.3,
+            "q25": 12.07,
+            "q75": 16.56,
+            "skew": 0.03
+        },
+        "Trihalomethanes": {
+            "mean": 66.4,
+            "std": 16.18,
+            "median": 66.62,
+            "min": 0.74,
+            "max": 124.0,
+            "q25": 55.84,
+            "q75": 77.34,
+            "skew": -0.08
+        },
+        "Turbidity": {
+            "mean": 3.97,
+            "std": 0.78,
+            "median": 3.96,
+            "min": 1.45,
+            "max": 6.74,
+            "q25": 3.44,
+            "q75": 4.5,
+            "skew": -0.01
+        }
+    },
+    "class_imbalance_ratio": 1.5636,
+    "best_model": "Random Forest"
+}

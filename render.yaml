@@ -1,0 +1,12 @@
+# Render blueprint: one free web service running the Flask app with gunicorn.
+# Deploy: https://render.com/deploy?repo=https://github.com/Srujankasturi/aquasense-water-potability
+services:
+  - type: web
+    name: aquasense-water-potability
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    # One worker: the four trained models are loaded once into memory (free tier = 512 MB).
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 120
+    healthCheckPath: /api/health
+    autoDeploy: true

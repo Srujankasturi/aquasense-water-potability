@@ -1,0 +1,82 @@
+{
+    "XGBoost": {
+        "name": "XGBoost",
+        "display_name": "XGBoost Classifier (Gradient Boosting)",
+        "accuracy": 0.6555,
+        "precision": 0.5641,
+        "recall": 0.5156,
+        "f1": 0.5388,
+        "roc_auc": 0.6646,
+        "cv_f1_mean": 0.5213,
+        "cv_f1_std": 0.0234,
+        "cv_roc_auc_mean": 0.6706,
+        "threshold": 0.5,
+        "is_active": false,
+        "confusion_matrix": {
+            "tn": 298,
+            "fp": 102,
+            "fn": 124,
+            "tp": 132
+        }
+    },
+    "Random Forest": {
+        "name": "Random Forest",
+        "display_name": "Random Forest Classifier (Ensemble Bagging)",
+        "accuracy": 0.6433,
+        "precision": 0.5524,
+        "recall": 0.4531,
+        "f1": 0.4979,
+        "roc_auc": 0.663,
+        "cv_f1_mean": 0.5432,
+        "cv_f1_std": 0.0247,
+        "cv_roc_auc_mean": 0.6938,
+        "threshold": 0.5,
+        "is_active": true,
+        "confusion_matrix": {
+            "tn": 306,
+            "fp": 94,
+            "fn": 140,
+            "tp": 116
+        }
+    },
+    "Decision Tree": {
+        "name": "Decision Tree",
+        "display_name": "Decision Tree Classifier (Hierarchical Rules)",
+        "accuracy": 0.6448,
+        "precision": 0.5935,
+        "recall": 0.2852,
+        "f1": 0.3852,
+        "roc_auc": 0.6099,
+        "cv_f1_mean": 0.4466,
+        "cv_f1_std": 0.0563,
+        "cv_roc_auc_mean": 0.6167,
+        "threshold": 0.5,
+        "is_active": false,
+        "confusion_matrix": {
+            "tn": 350,
+            "fp": 50,
+            "fn": 183,
+            "tp": 73
+        }
+    },
+    "Logistic Regression": {
+        "name": "Logistic Regression",
+        "display_name": "Logistic Regression (Linear Sigmoid Baseline)",
+        "accuracy": 0.5244,
+        "precision": 0.4146,
+        "recall": 0.5312,
+        "f1": 0.4658,
+        "roc_auc": 0.5474,
+        "cv_f1_mean": 0.4155,
+        "cv_f1_std": 0.0283,
+        "cv_roc_auc_mean": 0.4768,
+        "threshold": 0.5,
+        "is_active": false,
+        "confusion_matrix": {
+            "tn": 208,
+            "fp": 192,
+            "fn": 120,
+            "tp": 136
+        }
+    }
+}
