@@ -246,10 +246,12 @@ main .grid > *:nth-child(n+10) { --n: 9; }
 .btn-primary:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 rgb(var(--c-secondary-container)); }
 .btn-ghost { border: 1.5px solid rgb(var(--c-on-surface) / 0.85); color: rgb(var(--c-on-surface)); background: transparent; }
 .btn-ghost:hover { background: rgb(var(--c-on-surface)); color: rgb(var(--c-surface)); }
-.link-quiet { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; font-weight: 600; font-size: 15px; cursor: pointer;
-  color: rgb(var(--c-on-surface)); text-decoration: underline; text-decoration-color: rgb(var(--c-secondary)); text-decoration-thickness: 2px;
-  text-underline-offset: 6px; transition: color 0.2s; }
+.link-quiet { position: relative; display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; font-weight: 600; font-size: 16px; cursor: pointer;
+  color: rgb(var(--c-on-surface)); text-decoration: none; transition: color 0.2s; }
+/* one shared underline under icon + text (text-decoration would draw two, at two different heights) */
+.link-quiet::after { content: ""; position: absolute; left: 0; right: 0; bottom: 8px; height: 2px; background: rgb(var(--c-secondary)); transition: background 0.2s; }
 .link-quiet:hover { color: rgb(var(--c-primary)); }
+.link-quiet:hover::after { background: rgb(var(--c-primary)); }
 
 /* ---------- editorial bits ---------- */
 .squiggle { text-decoration: underline wavy rgb(var(--c-secondary)); text-decoration-thickness: 3px; text-underline-offset: 0.16em; text-decoration-skip-ink: none; }
